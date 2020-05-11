@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using TRMWPFUserInterface.Helper;
 
 namespace TRMWPFUserInterface.ViewModels
 {
@@ -11,6 +12,12 @@ namespace TRMWPFUserInterface.ViewModels
     {
         private string _userName;
         private string _password;
+        private IAPIHelper _apiHelper;
+
+        public LoginUserViewModel(IAPIHelper apiHelper)
+        {
+            _apiHelper = apiHelper;
+        }
         public string UserName
         {
             get { return _userName; }
@@ -40,9 +47,17 @@ namespace TRMWPFUserInterface.ViewModels
             return output;
 
         }
-        public void LogIn(string userName, string password)
+        public async Task LogIn(string userName, string password)
         {
-            Console.WriteLine();
+            try
+            {
+                var result = await _apiHelper.Authenticate(userName, password);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
     }
