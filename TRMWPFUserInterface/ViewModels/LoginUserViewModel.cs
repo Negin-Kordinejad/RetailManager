@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
@@ -25,6 +26,7 @@ namespace TRMWPFUserInterface.ViewModels
             {
                 _userName = value;
                 NotifyOfPropertyChange(() => UserName);
+                NotifyOfPropertyChange(() => CanLogIn);
             }
         }
         public string Password
@@ -34,29 +36,61 @@ namespace TRMWPFUserInterface.ViewModels
             {
                 _password = value;
                 NotifyOfPropertyChange(() => Password);
+                NotifyOfPropertyChange(() => CanLogIn);
             }
         }
-        public bool CanLogIn(string userName, string password)
+
+
+        public bool IsErrorVisible
         {
-            bool output = false;
-            //   if (userName?.Length > 0 && password?.Length > 0)
-            if (!String.IsNullOrWhiteSpace(userName) && !String.IsNullOrWhiteSpace(password))
+            get
             {
-                output = true;
+                bool output = false;
+                if (ErrorMessage?.Length > 0)
+                {
+                    output = true;
+                }
+                return output;
             }
-            return output;
 
         }
-        public async Task LogIn(string userName, string password)
+        private string _errorMessage;
+
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                NotifyOfPropertyChange(() => ErrorMessage);
+                NotifyOfPropertyChange(() => IsErrorVisible);
+            }
+        }
+
+
+        public bool CanLogIn//(string userName, string password)
+        {
+            get
+            {
+                bool output = false;
+                //   if (userName?.Length > 0 && password?.Length > 0)
+                if (!String.IsNullOrWhiteSpace(UserName) && !String.IsNullOrWhiteSpace(Password))
+                {
+                    output = true;
+                }
+                return output;
+            }
+        }
+        public async Task LogIn()
         {
             try
             {
-                var result = await _apiHelper.Authenticate(userName, password);
+                var result = await _apiHelper.Authenticate(UserName, Password);
             }
             catch (Exception ex)
             {
 
-                throw;
+                ErrorMessage = ex.Message;
             }
         }
 

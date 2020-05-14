@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using TRMWPFUserInterface.Helper;
 using TRMWPFUserInterface.ViewModels;
 
@@ -16,6 +17,10 @@ namespace TRMWPFUserInterface
         public Bootstrapper()
         {
             Initialize();
+            ConventionManager.AddElementConvention<PasswordBox>(
+           PasswordBoxHelper.BoundPasswordProperty,
+          "Password",
+          "PasswordChanged");
         }
         protected override void Configure()
         {

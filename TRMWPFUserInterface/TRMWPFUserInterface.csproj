@@ -81,6 +81,7 @@
     </Compile>
     <Compile Include="Helper\APIHelper.cs" />
     <Compile Include="Helper\IAPIHelper.cs" />
+    <Compile Include="Helper\PasswordBoxHelper.cs" />
     <Compile Include="Models\AuthenticatedUser.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\LoginUserView.xaml.cs">

@@ -18,21 +18,25 @@
             <RowDefinition Height="auto" ></RowDefinition>
             <RowDefinition Height="auto" ></RowDefinition>
             <RowDefinition Height="auto" ></RowDefinition>
+            <RowDefinition Height="auto" ></RowDefinition>
             <RowDefinition Height="*" ></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0 0 0 20"
                    HorizontalAlignment="Center" FontSize="64" FontFamily="segoe UI Light"
                    >Login Form</TextBlock>
+        <TextBlock x:Name="ErrorMessage" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Visibility="{Binding IsErrorVisible,Converter={StaticResource BooleanToVisibilityConverter}}"
+                   Margin="0 0 0 20" Foreground="Red" MaxWidth="300" TextWrapping="Wrap"></TextBlock>
         <!--UserName Row-->
-        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0 0 0 10">
+        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0 0 0 10">
             UserName:</TextBlock>
-        <TextBox x:Name="userName" Grid.Row="1" Grid.Column="2" MinWidth="150" Margin="0 0 0 10"></TextBox>
+        <TextBox x:Name="UserName" Grid.Row="2" Grid.Column="2" MinWidth="150" Margin="0 0 0 10"></TextBox>
         <!--Password Row-->
-        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0 0 0 20">
+        <TextBlock Grid.Row="3" Grid.Column="1" Margin="0 0 0 20">
             Password:</TextBlock>
-        <TextBox x:Name="Password" Grid.Row="2" Grid.Column="2" MinWidth="150" Margin="0 0 0 20"></TextBox>
+        <PasswordBox x:Name="Password" Grid.Row="3" Grid.Column="2" MinWidth="150" Margin="0 0 0 20"/>
+        <!--<TextBox x:Name="Password" Grid.Row="3" Grid.Column="2" MinWidth="150" Margin="0 0 0 20"></TextBox>-->
         <!--Login Row-->
-        <Button x:Name="LogIn" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Padding="20 10"
+        <Button x:Name="LogIn" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Padding="20 10"
                 HorizontalAlignment="Center">Log In</Button>
     </Grid>
 </UserControl>
