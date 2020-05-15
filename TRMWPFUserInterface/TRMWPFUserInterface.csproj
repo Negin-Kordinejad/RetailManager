@@ -80,11 +80,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helper\PasswordBoxHelper.cs" />
+    <Compile Include="ViewModels\SalesViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\LoginUserView.xaml.cs">
       <DependentUpon>LoginUserView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\LoginUserViewModel.cs" />
+    <Compile Include="Views\SalesView.xaml.cs">
+      <DependentUpon>SalesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
@@ -124,6 +128,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\LoginUserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SalesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
