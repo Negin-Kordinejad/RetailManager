@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using DesktopUILibrary.Api;
 using TRMWPFUserInterface.Helper;
 
 namespace TRMWPFUserInterface.ViewModels
@@ -86,6 +87,7 @@ namespace TRMWPFUserInterface.ViewModels
             try
             {
                 var result = await _apiHelper.Authenticate(UserName, Password);
+                await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
             }
             catch (Exception ex)
             {

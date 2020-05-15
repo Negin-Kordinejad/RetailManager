@@ -4,9 +4,9 @@ using System.Linq;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls.Primitives;
 
-namespace TRMWPFUserInterface.Models
+
+namespace DesktopUILibrary.Models
 {
     public class AuthenticatedUser
     {

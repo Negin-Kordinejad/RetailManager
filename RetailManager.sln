@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRMWPFUserInterface", "TRMW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMamagerClassLibrary", "DataMamagerClassLibrary\DataMamagerClassLibrary.csproj", "{1164D1AA-8755-4879-9920-901B83A6FBB2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopUILibrary", "DesktopUILibrary\DesktopUILibrary.csproj", "{838388C2-978D-49C6-8854-073BAD4D707D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{1164D1AA-8755-4879-9920-901B83A6FBB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1164D1AA-8755-4879-9920-901B83A6FBB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1164D1AA-8755-4879-9920-901B83A6FBB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{838388C2-978D-49C6-8854-073BAD4D707D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{838388C2-978D-49C6-8854-073BAD4D707D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{838388C2-978D-49C6-8854-073BAD4D707D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{838388C2-978D-49C6-8854-073BAD4D707D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,17 +6,21 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
-using TRMWPFUserInterface.Models;
+using DesktopUILibrary.Models;
+using System.Net.Http.Formatting;
 
-namespace TRMWPFUserInterface.Helper
+namespace DesktopUILibrary.Api
 {
     public class APIHelper : IAPIHelper
     {
+
         string api = ConfigurationManager.AppSettings["api"];
+        ILoggedInUserModel _loggedUserInfo;
         private HttpClient apiClient { get; set; }
-        public APIHelper()
+        public APIHelper(ILoggedInUserModel loggedUserInfo)
         {
             InitializeClient();
+            _loggedUserInfo = loggedUserInfo;
         }
         private void InitializeClient()
         {
@@ -41,6 +45,29 @@ namespace TRMWPFUserInterface.Helper
                 {
                     var result = await response.Content.ReadAsAsync<AuthenticatedUser>();
                     return result;
+                }
+                else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+        }
+        public async Task GetLoggedInUserInfo(string token)
+        {
+            apiClient.DefaultRequestHeaders.Clear();
+            apiClient.DefaultRequestHeaders.Accept.Clear();
+            apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            using (HttpResponseMessage response = await apiClient.GetAsync("/api/user"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsAsync<LoggedInUserModel>();
+                    _loggedUserInfo.FirstName = result.FirstName;
+                    _loggedUserInfo.LastName = result.LastName;
+                    _loggedUserInfo.CreateDate = result.CreateDate;
+                    _loggedUserInfo.EmailAddress = result.EmailAddress;
+                    _loggedUserInfo.Token =token;
                 }
                 else
                 {
