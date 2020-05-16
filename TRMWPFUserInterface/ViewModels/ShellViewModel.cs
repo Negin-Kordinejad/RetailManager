@@ -4,16 +4,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TRMWPFUserInterface.EventModels;
 
 namespace TRMWPFUserInterface.ViewModels
 {
-    public class ShellViewModel : Conductor<object>
+    public class ShellViewModel : Conductor<object>,IHandle<LogOnEvent>
     {
-        private LoginUserViewModel _LoginVM;
-        public ShellViewModel(LoginUserViewModel loginVM)
+        private IEventAggregator _events;
+        private SalesViewModel _salesVM;
+        private SimpleContainer _container;
+        public ShellViewModel(IEventAggregator events,SalesViewModel salesVM,SimpleContainer container)
+        { 
+            _events = events;
+            _salesVM = salesVM;
+            _container = container;
+            _events.Subscribe(this);
+            ActivateItem(_container.GetInstance<LoginUserViewModel>());
+           
+        }
+
+        public void Handle(LogOnEvent message)
         {
-            _LoginVM = loginVM;
-            ActivateItem(_LoginVM);
+            ActivateItem(_salesVM);
         }
     }
 }

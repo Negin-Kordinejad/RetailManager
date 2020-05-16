@@ -30,8 +30,8 @@ namespace TRMWPFUserInterface.ViewModels
 				NotifyOfPropertyChange(() => Cart);
 			}
 		}
-		private string _itemQuantity;
-		public string ItemQuantity
+		private int _itemQuantity;
+		public int ItemQuantity
 		{
 			get { return _itemQuantity; }
 			set { 
