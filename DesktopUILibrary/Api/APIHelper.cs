@@ -13,21 +13,27 @@ namespace DesktopUILibrary.Api
 {
     public class APIHelper : IAPIHelper
     {
-
         string api = ConfigurationManager.AppSettings["api"];
-        ILoggedInUserModel _loggedUserInfo;
-        private HttpClient apiClient { get; set; }
+        private ILoggedInUserModel _loggedUserInfo;
+        private HttpClient _apiClient;
         public APIHelper(ILoggedInUserModel loggedUserInfo)
         {
             InitializeClient();
             _loggedUserInfo = loggedUserInfo;
         }
+        public HttpClient AppClient
+        {
+            get
+            {
+                return _apiClient;
+            }
+        }
         private void InitializeClient()
         {
-            apiClient = new HttpClient();
-            apiClient.BaseAddress = new Uri(api);
-            apiClient.DefaultRequestHeaders.Accept.Clear();
-            apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _apiClient = new HttpClient();
+            _apiClient.BaseAddress = new Uri(api);
+            _apiClient.DefaultRequestHeaders.Accept.Clear();
+            _apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         }
         public async Task<AuthenticatedUser> Authenticate(string username, string password)
@@ -39,7 +45,7 @@ namespace DesktopUILibrary.Api
                new KeyValuePair<string,string>("password",password)
             }
             );
-            using (HttpResponseMessage response = await apiClient.PostAsync("/Token", data))
+            using (HttpResponseMessage response = await _apiClient.PostAsync("/Token", data))
             {
                 if (response.IsSuccessStatusCode)
                 {
@@ -54,11 +60,11 @@ namespace DesktopUILibrary.Api
         }
         public async Task GetLoggedInUserInfo(string token)
         {
-            apiClient.DefaultRequestHeaders.Clear();
-            apiClient.DefaultRequestHeaders.Accept.Clear();
-            apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-            using (HttpResponseMessage response = await apiClient.GetAsync("/api/user"))
+            _apiClient.DefaultRequestHeaders.Clear();
+            _apiClient.DefaultRequestHeaders.Accept.Clear();
+            _apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            using (HttpResponseMessage response = await _apiClient.GetAsync("/api/user"))
             {
                 if (response.IsSuccessStatusCode)
                 {
@@ -67,7 +73,7 @@ namespace DesktopUILibrary.Api
                     _loggedUserInfo.LastName = result.LastName;
                     _loggedUserInfo.CreateDate = result.CreateDate;
                     _loggedUserInfo.EmailAddress = result.EmailAddress;
-                    _loggedUserInfo.Token =token;
+                    _loggedUserInfo.Token = token;
                 }
                 else
                 {

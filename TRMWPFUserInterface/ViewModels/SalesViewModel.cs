@@ -1,4 +1,6 @@
 ﻿using Caliburn.Micro;
+using DesktopUILibrary.Api;
+using DesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,93 +10,115 @@ using System.Threading.Tasks;
 
 namespace TRMWPFUserInterface.ViewModels
 {
-    public class SalesViewModel:Screen
+    public class SalesViewModel : Screen
     {
-		private BindingList<string> _products;
-		public BindingList<string> Produsts
-		{
-			get { return _products; }
-			set {
-				_products = value;
-				NotifyOfPropertyChange(() => Produsts);
-			}
-		}
+        private IProductEndPoint _productEndPoint;
 
-		private BindingList<string> _cart;
-		public BindingList<string> Cart
-		{
-			get { return _cart; }
-			set
-			{
-				_cart = value;
-				NotifyOfPropertyChange(() => Cart);
-			}
-		}
-		private int _itemQuantity;
-		public int ItemQuantity
-		{
-			get { return _itemQuantity; }
-			set { 
-				_itemQuantity = value;
-				NotifyOfPropertyChange(() => ItemQuantity);
-			}
-		}
-		
+        public SalesViewModel(IProductEndPoint productEndPoint)
+        {
+            _productEndPoint = productEndPoint;
+        }
+        private async Task LoadProducts()
+        {
+            var productList = await _productEndPoint.GetAll();
+            Produsts = new BindingList<ProductModel>(productList);
 
-		public string SubTotal
-		{
-			get { return "$0.00"; }
-		
-		}
-		public string Tax
-		{
-			get { return "$0.00"; }
+        }
+        protected override async void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+            await LoadProducts();
+        }
+        private BindingList<ProductModel> _products;
+        public BindingList<ProductModel> Produsts
+        {
+            get { return _products; }
+            set
+            {
+                _products = value;
+                NotifyOfPropertyChange(() => Produsts);
+            }
+        }
 
-		}
-		public string Total
-		{
-			get { return "$0.00"; }
+        private BindingList<string> _cart;
+        public BindingList<string> Cart
+        {
+            get { return _cart; }
+            set
+            {
+                _cart = value;
+                NotifyOfPropertyChange(() => Cart);
+            }
+        }
+        private int _itemQuantity;
 
-		}
-		public bool CanAddToCart
-		{
-			get
-			{
-				bool output = false;
-				////   if (userName?.Length > 0 && password?.Length > 0)
-				//if (!String.IsNullOrWhiteSpace(UserName) && !String.IsNullOrWhiteSpace(Password))
-				//{
-				//	output = true;
-				//}
-				return output;
-			}
-		}
-		public void AddToCart()
-		{
-		}
-		public bool CanRemoveFromCart
-		{
-			get
-			{
-				bool output = false;
-				
-				return output;
-			}
-		}
-		public void RemoveFromCart()
-		{
-		}
-		public bool CanCheckOut
-		{
-			get
-			{
-				bool output = false;
 
-				return output;
-			}
-		}
-		public void CheckOut()
-		{
-		}
-	}
+
+        public int ItemQuantity
+        {
+            get { return _itemQuantity; }
+            set
+            {
+                _itemQuantity = value;
+                NotifyOfPropertyChange(() => ItemQuantity);
+            }
+        }
+
+
+        public string SubTotal
+        {
+            get { return "$0.00"; }
+
+        }
+        public string Tax
+        {
+            get { return "$0.00"; }
+
+        }
+        public string Total
+        {
+            get { return "$0.00"; }
+
+        }
+        public bool CanAddToCart
+        {
+            get
+            {
+                bool output = false;
+                ////   if (userName?.Length > 0 && password?.Length > 0)
+                //if (!String.IsNullOrWhiteSpace(UserName) && !String.IsNullOrWhiteSpace(Password))
+                //{
+                //	output = true;
+                //}
+                return output;
+            }
+        }
+        public void AddToCart()
+        {
+        }
+        public bool CanRemoveFromCart
+        {
+            get
+            {
+                bool output = false;
+
+                return output;
+            }
+        }
+        public void RemoveFromCart()
+        {
+        }
+        public bool CanCheckOut
+        {
+            get
+            {
+                bool output = false;
+
+                return output;
+            }
+        }
+        public void CheckOut()
+        {
+        }
+    }
 }
