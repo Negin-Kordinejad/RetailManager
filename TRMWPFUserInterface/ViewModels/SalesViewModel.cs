@@ -29,6 +29,19 @@ namespace TRMWPFUserInterface.ViewModels
             base.OnViewLoaded(view);
             await LoadProducts();
         }
+        private ProductModel _selectedProduct;
+
+        public ProductModel SelectedProduct
+        {
+            get { return _selectedProduct; }
+            set
+            {
+                _selectedProduct = value;
+                NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
+
         private BindingList<ProductModel> _products;
         public BindingList<ProductModel> Produsts
         {
@@ -40,8 +53,8 @@ namespace TRMWPFUserInterface.ViewModels
             }
         }
 
-        private BindingList<string> _cart;
-        public BindingList<string> Cart
+        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
+        public BindingList<CartItemModel> Cart
         {
             get { return _cart; }
             set
@@ -50,10 +63,7 @@ namespace TRMWPFUserInterface.ViewModels
                 NotifyOfPropertyChange(() => Cart);
             }
         }
-        private int _itemQuantity;
-
-
-
+        private int _itemQuantity = 1;
         public int ItemQuantity
         {
             get { return _itemQuantity; }
@@ -61,14 +71,20 @@ namespace TRMWPFUserInterface.ViewModels
             {
                 _itemQuantity = value;
                 NotifyOfPropertyChange(() => ItemQuantity);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
         }
-
-
         public string SubTotal
         {
-            get { return "$0.00"; }
-
+            get
+            {
+                decimal subTotal = 0;
+                foreach (var item in Cart)
+                {
+                    subTotal += (item.Product.RetailPrice * item.QuantiryInCart);
+                }
+                return subTotal.ToString("C");
+            }
         }
         public string Tax
         {
@@ -85,16 +101,36 @@ namespace TRMWPFUserInterface.ViewModels
             get
             {
                 bool output = false;
-                ////   if (userName?.Length > 0 && password?.Length > 0)
-                //if (!String.IsNullOrWhiteSpace(UserName) && !String.IsNullOrWhiteSpace(Password))
-                //{
-                //	output = true;
-                //}
+                if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
+                {
+                    output = true;
+                }
                 return output;
             }
         }
         public void AddToCart()
         {
+            CartItemModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
+            if (existingItem != null)
+            { 
+               
+                existingItem.QuantiryInCart += ItemQuantity;
+               // Cart.ResetBindings();
+                Cart.ResetItem(Cart.IndexOf(existingItem));
+            }
+            else
+            {
+                CartItemModel item = new CartItemModel
+                {
+                    Product = SelectedProduct,
+                    QuantiryInCart = ItemQuantity
+                };
+                Cart.Add(item);
+            }
+            SelectedProduct.QuantityInStock -= ItemQuantity;
+            ItemQuantity = 1;
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Cart);
         }
         public bool CanRemoveFromCart
         {
@@ -107,6 +143,7 @@ namespace TRMWPFUserInterface.ViewModels
         }
         public void RemoveFromCart()
         {
+            NotifyOfPropertyChange(() => SubTotal);
         }
         public bool CanCheckOut
         {
