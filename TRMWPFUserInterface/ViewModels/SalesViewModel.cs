@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using DesktopUILibrary.Api;
+using DesktopUILibrary.Helper;
 using DesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace TRMWPFUserInterface.ViewModels
     public class SalesViewModel : Screen
     {
         private IProductEndPoint _productEndPoint;
+        private IConfigHelper _configHelper;
 
-        public SalesViewModel(IProductEndPoint productEndPoint)
+        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper)
         {
             _productEndPoint = productEndPoint;
+            _configHelper = configHelper;
         }
         private async Task LoadProducts()
         {
@@ -78,22 +81,46 @@ namespace TRMWPFUserInterface.ViewModels
         {
             get
             {
-                decimal subTotal = 0;
-                foreach (var item in Cart)
-                {
-                    subTotal += (item.Product.RetailPrice * item.QuantiryInCart);
-                }
-                return subTotal.ToString("C");
+                return calculateSubTotal().ToString("C");
             }
+        }
+        private decimal calculateSubTotal()
+        {
+            decimal subTotal = 0;
+            foreach (var item in Cart)
+            {
+                subTotal += (item.Product.RetailPrice * item.QuantiryInCart);
+            }
+            return subTotal;
+        }
+        private decimal CalculateTax()
+        {
+            decimal taxrate = _configHelper.GetTaxRate()/100;
+            decimal taxAmount = 0;
+            foreach (var item in Cart)
+            {
+                if (item.Product.IsTaxable)
+                {
+                    taxAmount += (item.Product.RetailPrice * item.QuantiryInCart * taxrate);
+                }
+            }
+            return taxAmount;
         }
         public string Tax
         {
-            get { return "$0.00"; }
+            get
+            {
+                return CalculateTax().ToString("C");
+            }
 
         }
         public string Total
         {
-            get { return "$0.00"; }
+            get
+            {
+                decimal total = calculateSubTotal() + CalculateTax();
+                return total.ToString("C");
+            }
 
         }
         public bool CanAddToCart
@@ -112,10 +139,10 @@ namespace TRMWPFUserInterface.ViewModels
         {
             CartItemModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
             if (existingItem != null)
-            { 
-               
+            {
+
                 existingItem.QuantiryInCart += ItemQuantity;
-               // Cart.ResetBindings();
+                // Cart.ResetBindings();
                 Cart.ResetItem(Cart.IndexOf(existingItem));
             }
             else
@@ -131,6 +158,9 @@ namespace TRMWPFUserInterface.ViewModels
             ItemQuantity = 1;
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Cart);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+
         }
         public bool CanRemoveFromCart
         {
@@ -144,6 +174,8 @@ namespace TRMWPFUserInterface.ViewModels
         public void RemoveFromCart()
         {
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
         public bool CanCheckOut
         {

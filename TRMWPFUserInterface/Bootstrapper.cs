@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using DesktopUILibrary.Api;
+using DesktopUILibrary.Helper;
 using DesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace TRMWPFUserInterface
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<ILoggedInUserModel, LoggedInUserModel>()
+                .Singleton<IConfigHelper,ConfigHelper>()
                 .Singleton<IAPIHelper, APIHelper>();
 
             GetType().Assembly.GetTypes()
