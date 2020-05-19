@@ -97,13 +97,14 @@ namespace TRMWPFUserInterface.ViewModels
         {
             decimal taxrate = _configHelper.GetTaxRate()/100;
             decimal taxAmount = 0;
-            foreach (var item in Cart)
-            {
-                if (item.Product.IsTaxable)
-                {
-                    taxAmount += (item.Product.RetailPrice * item.QuantiryInCart * taxrate);
-                }
-            }
+            taxAmount = Cart.Where(x => x.Product.IsTaxable).Sum(x => x.Product.RetailPrice * x.Product.QuantityInStock * taxrate);
+            //foreach (var item in Cart)
+            //{
+            //    if (item.Product.IsTaxable)
+            //    {
+            //        taxAmount += (item.Product.RetailPrice * item.QuantiryInCart * taxrate);
+            //    }
+            //}
             return taxAmount;
         }
         public string Tax
