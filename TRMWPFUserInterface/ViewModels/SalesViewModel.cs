@@ -51,8 +51,18 @@ namespace TRMWPFUserInterface.ViewModels
                 NotifyOfPropertyChange(() => CanAddToCart);
             }
         }
+        private CartItemDisplayModel _selectedCartItem;
+        public CartItemDisplayModel SelectedCartItem
+        {
+            get { return _selectedCartItem; }
+            set
+            {
+                _selectedCartItem = value;
+                NotifyOfPropertyChange(() => SelectedCartItem);
+                NotifyOfPropertyChange(() => CanRemoveFromCart);
+            }
+        }
 
-        
         private BindingList<ProductDisplayModel> _products;
         public BindingList<ProductDisplayModel> Products
         {
@@ -177,12 +187,24 @@ namespace TRMWPFUserInterface.ViewModels
             get
             {
                 bool output = false;
-
+                if(SelectedCartItem!=null && SelectedCartItem.Product.QuantityInStock>0)
+                {
+                    output = true;
+                }
                 return output;
             }
         }
         public void RemoveFromCart()
         {
+            SelectedCartItem.Product.QuantityInStock += 1;
+            if(SelectedCartItem.QuantiryInCart>1)
+            {
+                SelectedCartItem.QuantiryInCart -= 1;
+            }
+            else
+            {
+                Cart.Remove(SelectedCartItem);
+            }
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
