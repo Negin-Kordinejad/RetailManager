@@ -35,6 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=9.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.9.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Data, Version=4.1.0.0, Culture=neutral, PublicKeyToken=c81663b416b68723, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.Data.4.1.0\lib\net461\AutoMapper.Data.dll</HintPath>
+    </Reference>
     <Reference Include="Caliburn.Micro, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
       <HintPath>..\packages\Caliburn.Micro.Core.3.2.0\lib\net45\Caliburn.Micro.dll</HintPath>
     </Reference>
@@ -81,6 +87,8 @@
     </Compile>
     <Compile Include="EventModels\LogOnEventModel.cs" />
     <Compile Include="Helper\PasswordBoxHelper.cs" />
+    <Compile Include="Models\CartItemDisplayModel.cs" />
+    <Compile Include="Models\ProductDisplayModel.cs" />
     <Compile Include="ViewModels\SalesViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\LoginUserView.xaml.cs">
@@ -122,6 +130,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataMamagerClassLibrary\DataMamagerClassLibrary.csproj">
+      <Project>{1164D1AA-8755-4879-9920-901B83A6FBB2}</Project>
+      <Name>DataMamagerClassLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DesktopUILibrary\DesktopUILibrary.csproj">
       <Project>{838388c2-978d-49c6-8854-073bad4d707d}</Project>
       <Name>DesktopUILibrary</Name>
@@ -142,7 +154,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="NewFolder1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

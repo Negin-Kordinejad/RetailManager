@@ -1,4 +1,5 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using DesktopUILibrary.Api;
 using DesktopUILibrary.Helper;
 using DesktopUILibrary.Models;
@@ -8,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TRMWPFUserInterface.Models;
 
 namespace TRMWPFUserInterface.ViewModels
 {
@@ -16,18 +18,21 @@ namespace TRMWPFUserInterface.ViewModels
         private IProductEndPoint _productEndPoint;
         private IConfigHelper _configHelper;
         private ISaleEndPoint _saleEndPoint;
+        private IMapper _mapper;
 
         public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper
-            ,ISaleEndPoint saleEndPoint)
+            ,ISaleEndPoint saleEndPoint,IMapper mapper)
         {
             _productEndPoint = productEndPoint;
             _configHelper = configHelper;
             _saleEndPoint = saleEndPoint;
+            _mapper=mapper;
         }
         private async Task LoadProducts()
         {
             var productList = await _productEndPoint.GetAll();
-            Produsts = new BindingList<ProductModel>(productList);
+            var products = _mapper.Map<List<ProductDisplayModel>>(productList);
+            Products = new BindingList<ProductDisplayModel>(products);
 
         }
         protected override async void OnViewLoaded(object view)
@@ -35,9 +40,8 @@ namespace TRMWPFUserInterface.ViewModels
             base.OnViewLoaded(view);
             await LoadProducts();
         }
-        private ProductModel _selectedProduct;
-
-        public ProductModel SelectedProduct
+        private ProductDisplayModel _selectedProduct;
+        public ProductDisplayModel SelectedProduct
         {
             get { return _selectedProduct; }
             set
@@ -48,19 +52,20 @@ namespace TRMWPFUserInterface.ViewModels
             }
         }
 
-        private BindingList<ProductModel> _products;
-        public BindingList<ProductModel> Produsts
+        
+        private BindingList<ProductDisplayModel> _products;
+        public BindingList<ProductDisplayModel> Products
         {
             get { return _products; }
             set
             {
                 _products = value;
-                NotifyOfPropertyChange(() => Produsts);
+                NotifyOfPropertyChange(() => Products);
             }
         }
 
-        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
-        public BindingList<CartItemModel> Cart
+        private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
+        public BindingList<CartItemDisplayModel> Cart
         {
             get { return _cart; }
             set
@@ -141,17 +146,17 @@ namespace TRMWPFUserInterface.ViewModels
         }
         public void AddToCart()
         {
-            CartItemModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
+            CartItemDisplayModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
             if (existingItem != null)
             {
 
                 existingItem.QuantiryInCart += ItemQuantity;
                 // Cart.ResetBindings();
-                Cart.ResetItem(Cart.IndexOf(existingItem));
+                //Cart.ResetItem(Cart.IndexOf(existingItem));
             }
             else
             {
-                CartItemModel item = new CartItemModel
+                CartItemDisplayModel item = new CartItemDisplayModel
                 {
                     Product = SelectedProduct,
                     QuantiryInCart = ItemQuantity

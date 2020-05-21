@@ -1,4 +1,5 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using DesktopUILibrary.Api;
 using DesktopUILibrary.Helper;
 using DesktopUILibrary.Models;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using TRMWPFUserInterface.Helper;
+using TRMWPFUserInterface.Models;
 using TRMWPFUserInterface.ViewModels;
 
 namespace TRMWPFUserInterface
@@ -25,17 +27,27 @@ namespace TRMWPFUserInterface
           "Password",
           "PasswordChanged");
         }
+        private IMapper ConfigureAutomapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+                        {
+                            cfg.CreateMap<ProductModel, ProductDisplayModel>();
+                            cfg.CreateMap<CartItemModel, CartItemDisplayModel>();
+                        });
+            var output = config.CreateMapper();
+            return output;
+        }
         protected override void Configure()
         {
+            _container.Instance(ConfigureAutomapper());
             _container.Instance(_container)
-                .PerRequest<IProductEndPoint,ProductEndPoint>()
+                .PerRequest<IProductEndPoint, ProductEndPoint>()
                   .PerRequest<ISaleEndPoint, SaleEndPoint>();
-
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<ILoggedInUserModel, LoggedInUserModel>()
-                .Singleton<IConfigHelper,ConfigHelper>()
+                .Singleton<IConfigHelper, ConfigHelper>()
                 .Singleton<IAPIHelper, APIHelper>();
 
             GetType().Assembly.GetTypes()

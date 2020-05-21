@@ -10,12 +10,6 @@ namespace DesktopUILibrary.Models
     {
         public ProductModel Product { get; set; }
         public int QuantiryInCart { get; set; }
-        public string DisplayText
-        {
-            get
-            {
-                return $"{Product.ProductName} ({QuantiryInCart})";
-            }
-        }
+      
     }
 }
