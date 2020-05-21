@@ -27,7 +27,10 @@ namespace TRMWPFUserInterface
         }
         protected override void Configure()
         {
-            _container.Instance(_container).PerRequest<IProductEndPoint,ProductEndPoint>();
+            _container.Instance(_container)
+                .PerRequest<IProductEndPoint,ProductEndPoint>()
+                  .PerRequest<ISaleEndPoint, SaleEndPoint>();
+
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()

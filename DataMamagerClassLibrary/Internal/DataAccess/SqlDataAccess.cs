@@ -26,7 +26,7 @@ namespace DataMamagerClassLibrary.Internal.DataAccess
                 return rows;
             }
         }
-        public void SavedData<T>(string storedProcedure, T parameters, string connectinStringName)
+        public void SaveData<T>(string storedProcedure, T parameters, string connectinStringName)
         {
             string connectrinString = GetConnectionString(connectinStringName);
             using (IDbConnection connection = new SqlConnection(connectrinString))

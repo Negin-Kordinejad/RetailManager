@@ -15,11 +15,14 @@ namespace TRMWPFUserInterface.ViewModels
     {
         private IProductEndPoint _productEndPoint;
         private IConfigHelper _configHelper;
+        private ISaleEndPoint _saleEndPoint;
 
-        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper)
+        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper
+            ,ISaleEndPoint saleEndPoint)
         {
             _productEndPoint = productEndPoint;
             _configHelper = configHelper;
+            _saleEndPoint = saleEndPoint;
         }
         private async Task LoadProducts()
         {
@@ -161,6 +164,7 @@ namespace TRMWPFUserInterface.ViewModels
             NotifyOfPropertyChange(() => Cart);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
 
         }
         public bool CanRemoveFromCart
@@ -177,18 +181,34 @@ namespace TRMWPFUserInterface.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
         public bool CanCheckOut
         {
             get
             {
                 bool output = false;
-
+                if (Cart.Count > 0)
+                {
+                    output = true;
+                }
                 return output;
             }
         }
-        public void CheckOut()
+        public async Task CheckOut()
         {
+            SaleModel sale = new SaleModel();
+            foreach(var item in Cart)
+            {
+                sale.SaleDetails.Add(new SaleDetailModel
+                {
+                    ProductId = item.Product.Id,
+                    Quantity = item.QuantiryInCart
+                }
+                    ); 
+            }
+            await _saleEndPoint.PostSale(sale);
+
         }
     }
 }
