@@ -28,6 +28,15 @@ namespace TRMWPFUserInterface.ViewModels
             _saleEndPoint = saleEndPoint;
             _mapper=mapper;
         }
+        private async Task ResetSaleViewModel()
+        {
+            Cart = new BindingList<CartItemDisplayModel>();
+            await LoadProducts();
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
+        }
         private async Task LoadProducts()
         {
             var productList = await _productEndPoint.GetAll();
@@ -180,6 +189,7 @@ namespace TRMWPFUserInterface.ViewModels
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
             NotifyOfPropertyChange(() => CanCheckOut);
+            NotifyOfPropertyChange(() => CanRemoveFromCart);
 
         }
         public bool CanRemoveFromCart
@@ -187,7 +197,7 @@ namespace TRMWPFUserInterface.ViewModels
             get
             {
                 bool output = false;
-                if(SelectedCartItem!=null && SelectedCartItem.Product.QuantityInStock>0)
+                if(SelectedCartItem!=null && SelectedCartItem.QuantiryInCart>0)
                 {
                     output = true;
                 }
@@ -209,6 +219,7 @@ namespace TRMWPFUserInterface.ViewModels
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
             NotifyOfPropertyChange(() => CanCheckOut);
+            NotifyOfPropertyChange(() => CanAddToCart);
         }
         public bool CanCheckOut
         {
@@ -235,6 +246,7 @@ namespace TRMWPFUserInterface.ViewModels
                     ); 
             }
             await _saleEndPoint.PostSale(sale);
+            await ResetSaleViewModel();
 
         }
     }
