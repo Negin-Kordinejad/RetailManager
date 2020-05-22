@@ -58,6 +58,10 @@ namespace DesktopUILibrary.Api
                 }
             }
         }
+      public void LogOffUsser()
+        {
+            _apiClient.DefaultRequestHeaders.Clear();
+        }
         public async Task GetLoggedInUserInfo(string token)
         {
             _apiClient.DefaultRequestHeaders.Clear();
