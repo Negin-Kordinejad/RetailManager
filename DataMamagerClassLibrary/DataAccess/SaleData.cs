@@ -12,10 +12,10 @@ namespace DataMamagerClassLibrary.DataAccess
     {
         public void SaveSale(SaleModel saleInfo, string CachierId)
         {
-            SqlDataAccess sql = new SqlDataAccess();
+
             List<SaleDetailDBModel> detaials = new List<SaleDetailDBModel>();
             ProductData products = new ProductData();
-            var taxRate = ConfigHelper.GetTaxRate()/100;
+            var taxRate = ConfigHelper.GetTaxRate() / 100;
 
             foreach (var item in saleInfo.SaleDetails)
             {
@@ -44,13 +44,37 @@ namespace DataMamagerClassLibrary.DataAccess
                 CashierId = CachierId
             };
             sale.Total = sale.SubTotal + sale.Tax;
-            sql.SaveData<SaleDBModel>("spSale_Insert", sale, "DataManager");
-            sale.Id = sql.LoadData<int,dynamic>("spSale_LookUp", new {sale.CashierId,sale.SaleDate }, "DataManager").FirstOrDefault();
-            foreach (var item in detaials)
+            //SqlDataAccess sql = new SqlDataAccess();
+            //sql.SaveData<SaleDBModel>("spSale_Insert", sale, "DataManager");
+            //sale.Id = sql.LoadData<int,dynamic>("spSale_LookUp", new {sale.CashierId,sale.SaleDate }, "DataManager").FirstOrDefault();
+            //foreach (var item in detaials)
+            //{
+            //    item.SaleId = sale.Id;
+            //    sql.SaveData("spSaleDetail_Insert", item, "DataManager");
+            //}
+
+
+            using (SqlDataAccess sql = new SqlDataAccess())
             {
-                item.SaleId = sale.Id;
-                sql.SaveData("spSaleDetail_Insert", item, "DataManager");
+                try
+                {
+                    sql.StartTransaction("DataManager");
+                    sql.SaveDataInTransaction<SaleDBModel>("spSale_Insert", sale);
+                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("spSale_LookUp", new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
+                    foreach (var item in detaials)
+                    {
+                        item.SaleId = sale.Id;
+                        sql.SaveDataInTransaction("spSaleDetail_Insert", item);
+                    }
+                    sql.CommitTransaction();
+                }
+                catch
+                {
+                    sql.RolbackTransaction();
+                    throw;
+                }
             }
+
         }
     }
 }
