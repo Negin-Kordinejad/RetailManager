@@ -13,6 +13,7 @@ namespace DataManager.Controllers
     [Authorize]
     public class SaleController : ApiController
     {
+        [Authorize(Roles = "Cashier")]
         public void Post(SaleModel saleModel)
         {
             SaleData data = new SaleData();
@@ -21,8 +22,17 @@ namespace DataManager.Controllers
         }
         [Route("GetSalesReport")]
         [HttpGet]
+        [Authorize(Roles = "Admin,Manager")]
         public List<SaleReportModel> SalesGetReport()
         {
+            if(RequestContext.Principal.IsInRole("Admin"))
+            {
+                //To Admin Stuff
+            }
+            else if(RequestContext.Principal.IsInRole("Manager  "))
+            {
+                //Do Manager stuff
+            }
             SaleData data = new SaleData();
             return data.GetSaleReport();
         }
